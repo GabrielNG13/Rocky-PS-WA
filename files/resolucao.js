@@ -16,6 +16,7 @@ function fixName(data){
         name = name.replace(/ß/g,"b")       //Substitui "ß" por "b"
         obj.name = name                     //Registra o valor corrigido
     });
+    return
 }
 
 function fixPrice(data){
@@ -25,6 +26,7 @@ function fixPrice(data){
             obj.price = price                   //Registra o valor corrigido
         }
     });
+    return
 }
 
 function fixQuantity(data){
@@ -33,6 +35,7 @@ function fixQuantity(data){
             obj.quantity = 0
         }
     });
+    return
 }
 
 function exportSolutionToJson(data) {
@@ -40,9 +43,31 @@ function exportSolutionToJson(data) {
     let fs = require('fs')
     fs.writeFile('files/fixed-database.json',json,'utf8', function(err) {
         if (err) throw err
-        console.log('Complete')
     })
+    return
 }
+
+function orderedList(data) {
+    let list = data.sort( function(a,b) {
+        if (a.category > b.category) {
+            return 1;
+        } else if (a.category < b.category) {
+            return -1;
+        } else {
+            if (a.id > b.id) {
+                return 1;
+            } else if (a.id < b.id) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
+    });
+    console.log(list);
+    return;
+}
+
+
 
 const data = readJson();                    //Array com todos os objetos obtidos da leitura do JSON
 if (data == null) {
@@ -52,3 +77,5 @@ fixName(data);                              //Chamada da função que corrige os
 fixPrice(data);                             //Chamada da função que corrige os preços
 fixQuantity(data);                          //Chamada da função que corrige as quantidades
 exportSolutionToJson(data);                 //Chamada da função que exporta um arquivo com a saída
+
+orderedList(data);                          //Imprime lista ordenada pela categoria e id
