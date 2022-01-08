@@ -1,3 +1,4 @@
+//Carrega o JSON corrompido
 function readJson(){
     try {
         return require('./broken-database.json')
@@ -7,28 +8,31 @@ function readJson(){
     }
 }
 
+//Substitui os caracateres trocados nos nomes
 function fixName(data){
     data.forEach(obj => {
-        let name = obj.name                 //Copia o valor de name
-        name = name.replace(/æ/g,"a")       //Substitui "æ" por "a"
-        name = name.replace(/¢/g,"c")       //Substitui "¢" por "c"
-        name = name.replace(/ø/g,"o")       //Substitui "ø" por "o"
-        name = name.replace(/ß/g,"b")       //Substitui "ß" por "b"
-        obj.name = name                     //Registra o valor corrigido
+        let name = obj.name
+        name = name.replace(/æ/g,"a")
+        name = name.replace(/¢/g,"c")
+        name = name.replace(/ø/g,"o")
+        name = name.replace(/ß/g,"b")
+        obj.name = name
     });
     return
 }
 
+//Converte os precos para valor numérico
 function fixPrice(data){
     data.forEach(obj => {
         if(typeof obj.price == "string"){
-            let price = parseFloat(obj.price)   //Copia o valor de price e o converte para float
-            obj.price = price                   //Registra o valor corrigido
+            let price = parseFloat(obj.price)
+            obj.price = price
         }
     });
     return
 }
 
+//Adiciona o atributo quantidade
 function fixQuantity(data){
     data.forEach(obj => {
         if(obj.quantity == undefined){
@@ -38,15 +42,18 @@ function fixQuantity(data){
     return
 }
 
+//Gera o arquivo saida.json
 function exportSolutionToJson(data) {
     let json = JSON.stringify(data)
     let fs = require('fs')
-    fs.writeFile('files/fixed-database.json',json,'utf8', function(err) {
-        if (err) throw err
+    fs.writeFile('saida.json',json, (err) => {
+        if (err) console.log(err)
+        console.log('\nSolution file created')
     })
     return
 }
 
+//Imprime a lista ordenada dos produtos
 function orderedList(data) {
     let list = data.sort( function(a,b) {
         if (a.category > b.category) {
@@ -67,6 +74,7 @@ function orderedList(data) {
     return;
 }
 
+//Imprime o valor total de estoque por categoria
 function valuePerCategory(data) {
     let categories = []
     let values = []
@@ -85,17 +93,17 @@ function valuePerCategory(data) {
     return;
 }
 
-const data = readJson();                    //Array com todos os objetos obtidos da leitura do JSON
+const data = readJson();
 if (data == null) {
     return;
 }
-fixName(data);                              //Chamada da função que corrige os nomes
-fixPrice(data);                             //Chamada da função que corrige os preços
-fixQuantity(data);                          //Chamada da função que corrige as quantidades
-exportSolutionToJson(data);                 //Chamada da função que exporta um arquivo com a saída
+fixName(data);
+fixPrice(data);
+fixQuantity(data);
+exportSolutionToJson(data);
 
 console.log("----------- Ordered list ------------")
-orderedList(data);                          //Imprime lista ordenada pela categoria e id
+orderedList(data);
 
 console.log("\n-------- Value per category ---------")
-valuePerCategory(data);                     //Imprime o estoque total de cada categoria
+valuePerCategory(data);
