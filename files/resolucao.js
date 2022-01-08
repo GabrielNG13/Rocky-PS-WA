@@ -67,7 +67,23 @@ function orderedList(data) {
     return;
 }
 
+function valuePerCategory(data) {
+    let categories = []
+    let values = []
+    data.forEach(obj => {
+        if (categories.indexOf(obj.category) == -1) {
+            categories.push(obj.category)
+            values.push(0)
+        }
+        values[categories.indexOf(obj.category)] += obj.quantity * obj.price
+    });
+    
+    for(let i = 0; i < categories.length; i++){
+        console.log(categories[i] + ": " + values[i].toFixed(2))
+    }
 
+    return;
+}
 
 const data = readJson();                    //Array com todos os objetos obtidos da leitura do JSON
 if (data == null) {
@@ -78,4 +94,8 @@ fixPrice(data);                             //Chamada da função que corrige os
 fixQuantity(data);                          //Chamada da função que corrige as quantidades
 exportSolutionToJson(data);                 //Chamada da função que exporta um arquivo com a saída
 
+console.log("----------- Ordered list ------------")
 orderedList(data);                          //Imprime lista ordenada pela categoria e id
+
+console.log("\n-------- Value per category ---------")
+valuePerCategory(data);                     //Imprime o estoque total de cada categoria
